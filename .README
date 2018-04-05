@@ -1,0 +1,22 @@
+## Introduction
+
+基于koa2提供一个商品网站的API服务
+
+## install
+
+```
+cd koa-server
+npm i
+```
+## dev
+
+```
+npm run dev
+```
+
+## build and start
+
+```
+npm run build
+node dist
+```
