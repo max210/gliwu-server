@@ -16,7 +16,8 @@
     "koa-json": "^2.0.2",
     "koa-logger": "^3.2.0",
     "koa-onerror": "^4.0.0",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "mongoose": "^5.0.13"
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.1",

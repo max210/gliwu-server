@@ -4,12 +4,17 @@ import logger from 'koa-logger'
 import onerror from 'koa-onerror'
 import bodyparser from 'koa-bodyparser'
 
+import { mongooseInit } from './models/init'
 import goods from './routers/goods'
 import users from './routers/users'
 import admin from './routers/admin'
 
-
 const app = new Koa()
+
+//mongoose初始化
+;(async () => {
+  await mongooseInit()
+})()
 
 onerror(app)
 
