@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 const userSechema = new mongoose.Schema({
   created: String,
   name: String,
+  email: String,
   pass: String
 })
 

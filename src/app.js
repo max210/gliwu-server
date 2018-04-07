@@ -5,9 +5,8 @@ import onerror from 'koa-onerror'
 import bodyparser from 'koa-bodyparser'
 
 import { mongooseInit } from './models/init'
-import goods from './routers/goods'
-import users from './routers/users'
-import admin from './routers/admin'
+import good from './routers/good'
+import user from './routers/user'
 
 const app = new Koa()
 
@@ -22,9 +21,8 @@ app.use(bodyparser({enableTypes: ['json', 'form', 'text']}))
 app.use(json())
 app.use(logger())
 
-app.use(goods.routes(), goods.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
-app.use(admin.routes(), admin.allowedMethods())
+app.use(good.routes(), good.allowedMethods())
+app.use(user.routes(), user.allowedMethods())
 
 app.on('error', (err, ctx) => {
   console.error('koa-server has error', err, ctx)
