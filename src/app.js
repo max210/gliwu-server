@@ -4,7 +4,7 @@ import logger from 'koa-logger'
 import onerror from 'koa-onerror'
 import bodyparser from 'koa-bodyparser'
 
-import { mongooseInit } from './models/init'
+import {mongooseInit} from './models/init'
 import good from './routers/good'
 import user from './routers/user'
 
@@ -16,6 +16,9 @@ const app = new Koa()
 })()
 
 onerror(app)
+
+//加密cookie 指定加密短语
+app.keys = ['cookie_secret1', 'cookie_secret2'];
 
 app.use(bodyparser({enableTypes: ['json', 'form', 'text']}))
 app.use(json())
