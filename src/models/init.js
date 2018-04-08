@@ -4,7 +4,7 @@ import config from '../config'
 
 mongoose.Promise = global.Promise
 
-export const mongooseInit = () => {
+export default () => {
   let maxConnections = 0
 
   return new Promise(resolve => {

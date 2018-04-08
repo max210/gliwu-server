@@ -4,7 +4,7 @@ import logger from 'koa-logger'
 import onerror from 'koa-onerror'
 import bodyparser from 'koa-bodyparser'
 
-import {mongooseInit} from './models/init'
+import mongooseInit from './models/init'
 import good from './routers/good'
 import user from './routers/user'
 
