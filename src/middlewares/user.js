@@ -6,7 +6,7 @@ import validator from 'validator'
 import config from '../config'
 import User from '../models/user'
 
-//注册
+// 注册
 export const signup = async (ctx, next) => {
   const name = validator.trim(ctx.query.name)
   const email = validator.trim(ctx.query.email)
@@ -59,7 +59,7 @@ export const signup = async (ctx, next) => {
   next()
 }
 
-//登录
+// 登录
 export const signin = async (ctx, next) => {
   const nameOrEmail = validator.trim(ctx.query.nameOrEmail)
   const pass = validator.trim(ctx.query.pass)
@@ -104,4 +104,10 @@ export const signin = async (ctx, next) => {
    //返回token 以备客户端需要
    ctx.body = {status: 0, msg: '登录成功', token}
 
+}
+
+// 登出
+export const signout = async (ctx, next) => {
+   ctx.cookies.set(config.cookieName, '', {signed:false,maxAge:0})
+   ctx.body = {status: 0, msg: '已登出'}
 }
