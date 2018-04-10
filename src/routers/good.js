@@ -1,9 +1,9 @@
 import Router from 'koa-router'
 
-const router = Router()
+import * as good from '../middlewares/good'
 
-router.get('/goods', async (ctx, next) => {
-  ctx.body = 'this is goods page'
-})
+const router = new Router({prefix: '/api/good'})
+
+router.get('/', good.getGoods)
 
 export default router

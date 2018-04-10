@@ -4,7 +4,7 @@ import jwt from 'jwt-simple'
 import validator from 'validator'
 
 import config from '../config'
-import User from '../models/user'
+import userModel from '../models/user'
 
 // 注册
 export const signup = async (ctx, next) => {
@@ -45,7 +45,7 @@ export const signup = async (ctx, next) => {
     return
   }
 
-  let user = new User()
+  let user = new userModel()
   user.name = name
   user.email = email
   user.pass = bcrypt.hashSync(pass, 10)
@@ -70,8 +70,8 @@ export const signin = async (ctx, next) => {
     return
   }
 
-  //查找用户
-  const user = await User.findOne({
+  // 查找用户
+  const user = await userModel.findOne({
     $or: [{name: nameOrEmail}, {email: nameOrEmail}]
   })
   if (!user) {
@@ -79,7 +79,7 @@ export const signin = async (ctx, next) => {
     return
   }
 
-  //验证密码
+  // 验证密码
   const isOk = bcrypt.compareSync(pass, user.pass)
   if (!isOk) {
     ctx.body = {status: 1, msg: '密码错误'}
@@ -99,7 +99,7 @@ export const signin = async (ctx, next) => {
     signed: true,
     httpOnly: true
   }
-   // 将token保存在cookie里
+
    ctx.cookies.set(config.cookieName, token, opts)
    //返回token 以备客户端需要
    ctx.body = {status: 0, msg: '登录成功', token}
