@@ -7,6 +7,7 @@ export default (ctx, next) => {
   const decoded = jwt.decode(token, config.jwtSecret)
 
   if (decoded) {
+    ctx.user = decoded
     return next()
   }
 

@@ -32,14 +32,14 @@ export const signup = async (ctx, next) => {
   }
 
   //验证用户名是否已注册
-  const hadName = await User.findOne({name})
+  const hadName = await userModel.findOne({name})
   if (hadName || name === 'admin') {
     ctx.body = {status: 1, msg: '用户名已被注册'}
     return
   }
 
   //验证邮箱是否已注册
-  const hadEmail = await User.findOne({email})
+  const hadEmail = await userModel.findOne({email})
   if (hadEmail) {
     ctx.body = {status: 1, msg: '邮箱已被注册'}
     return
@@ -101,13 +101,56 @@ export const signin = async (ctx, next) => {
   }
 
    ctx.cookies.set(config.cookieName, token, opts)
-   //返回token 以备客户端需要
-   ctx.body = {status: 0, msg: '登录成功', token}
-
+   ctx.body = {status: 0, msg: '登录成功', token}   //返回token 以备客户端需要
 }
 
 // 登出
 export const signout = async (ctx, next) => {
    ctx.cookies.set(config.cookieName, '', {signed:false,maxAge:0})
    ctx.body = {status: 0, msg: '已登出'}
+}
+
+// 添加收藏
+export const addCollection = async (ctx, next) => {
+  const { productId, productImg, productLink } = ctx.query
+  const _id = ctx.user.user_id
+  const product = { productId, productImg, productLink }
+
+  try {
+    const user = await userModel.findOne({_id}).exec()
+    const filterResult = R.filter(R.propEq('productId', productId), user.likes)
+
+    if (filterResult.length) {
+       ctx.body = {status: 1, msg: '您已经收藏过了，快去「我的收藏」看看'}
+       return
+    }
+
+    user.likes.push(product)
+    await user.save()
+    ctx.body = {status: 0, msg: '收藏成功，快去「我的收藏」看看'}
+
+  } catch (e) {
+    ctx.body = {status: 1, msg: '系统繁忙，稍后再试'}
+  }
+
+}
+
+// 取消收藏
+export const removeCollection = async (ctx, next) => {
+  const productId = ctx.query
+  const _id = ctx.user.user_id
+  console.log('ctx.decoded')
+  console.log(ctx.user)
+
+  try {
+    const user = await userModel.findOne({_id}).exec()
+    const newlikes = R.reject(R.propEq('productId', productId), user.likes)
+
+    user.likes = newlikes
+    await user.save()
+    ctx.body = {status: 0, msg: '取消收藏成功'}
+
+  } catch (e) {
+    ctx.body = {status: 1, msg: '系统繁忙，稍后再试'}
+  }
 }
