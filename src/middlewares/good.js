@@ -75,3 +75,71 @@ export const getGoods = async (ctx, next) => {
   }
 
 }
+
+// -----管理员商品管理 ------
+
+// 获得所有商品
+export const getAllGoods = async (ctx, next) => {
+  const page = parseInt(ctx.query.page)
+  const pageSize = parseInt(ctx.query.pageSize)
+  const skip = (page - 1) * pageSize
+
+  try {
+    const goods = await userModel.find().skip(skip).limit(pageSize).exec()
+    ctx.body = { status: 0, msg: '获取成功', data: goods }
+  } catch (e) {
+    ctx.body = { status: 1, msg: '获取失败' }
+  }
+}
+
+// 增加商品
+export const newGood = async (ctx, next) => {
+  const productType = ctx.query.productType,
+        productName = ctx.query.productName,
+        productImg = ctx.query.productImg,
+        productPrice = ctx.query.productPrice,
+        productDesc = ctx.query.productDesc
+
+  let good = new goodModel()
+  good.productType = productType
+  good.productName = productName
+  good.productImg = productImg
+  good.productPrice = productPrice
+  good.productDesc = productDesc
+
+  try {
+    await good.save()
+    ctx.body = { status: 0, msg: '创建商品成功' }
+  } catch (e) {
+    ctx.body = { status: 1, msg: '创建商品失败' }
+  }
+}
+
+// 删除商品
+export const delateGood = async (ctx, next) => {
+  const _id = ctx.query.productId
+
+  try {
+    await goodModel.remove({ _id })
+    ctx.body = { status: 0, msg: '删除成功' }
+  } catch (e) {
+    ctx.body = { status: 1, msg: '删除失败' }
+  }
+}
+
+// 修改商品
+export const updateGood = async (ctx, next) => {
+  const _id = ctx.query.productId,
+        productType = ctx.query.productType,
+        productName = ctx.query.productName,
+        productImg = ctx.query.productImg,
+        productPrice = ctx.query.productPrice,
+        productDesc = ctx.query.productDesc
+
+  try {
+    await userModel.updateOne({ _id }, { productType, productName, productImg, productPrice, productDesc }).exec()
+    ctx.body = { status: 0, msg: '更新商品成功' }
+  } catch (e) {
+    ctx.body = { status: 1, msg: '更新商品失败' }
+  }
+}
