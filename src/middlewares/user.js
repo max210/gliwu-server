@@ -110,6 +110,18 @@ export const signout = async (ctx, next) => {
    ctx.body = {status: 0, msg: '已登出'}
 }
 
+// 检查登录状态
+export const checklogin = async (ctx, next) => {
+  const token = ctx.cookies.get(config.cookieName) || ''
+  const decoded = jwt.decode(token, config.jwtSecret)
+
+  if (decode) {
+    ctx.body = { status: 0, msg: '已登录' }
+  }
+
+  ctx.body = { status: 1, msg: '未登录' }
+}
+
 // 添加收藏
 export const addCollection = async (ctx, next) => {
   const { productId, productImg, productLink } = ctx.query
