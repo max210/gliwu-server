@@ -166,3 +166,15 @@ export const removeCollection = async (ctx, next) => {
     ctx.body = {status: 1, msg: '系统繁忙，稍后再试'}
   }
 }
+
+// 收藏的商品
+export const collection = async (ctx, next) => {
+  const _id = ctx.user.user_id
+
+  try {
+    const user = await userModel.findOne({ _id })
+    ctx.body = { status: 0, msg: '获取成功', data: user.likes }
+  } catch (e) {
+    ctx.body = { status: 1, msg: '获取失败' }
+  }
+}
