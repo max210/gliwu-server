@@ -3,6 +3,7 @@ import json from 'koa-json'
 import logger from 'koa-logger'
 import onerror from 'koa-onerror'
 import bodyparser from 'koa-bodyparser'
+import cors from 'koa2-cors'
 
 import mongooseInit from './models/init'
 import good from './routers/good'
@@ -24,11 +25,17 @@ app.use(bodyparser({enableTypes: ['json', 'form', 'text']}))
 app.use(json())
 app.use(logger())
 
+// 跨域
+app.use(cors({
+    origin: 'http://localhost:8080',
+    credentials: true
+}))
+
 app.use(good.routes(), good.allowedMethods())
 app.use(user.routes(), user.allowedMethods())
 
 app.on('error', (err, ctx) => {
-  console.error('koa-server has error', err, ctx)
+  console.error('gliwu-server has error', err, ctx)
 })
 
 app.listen(3000)
