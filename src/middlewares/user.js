@@ -113,13 +113,15 @@ export const signout = async (ctx, next) => {
 // 检查登录状态
 export const checklogin = async (ctx, next) => {
   const token = ctx.cookies.get(config.cookieName) || ''
-  const decoded = jwt.decode(token, config.jwtSecret)
+  if (token) {
+    const decoded = jwt.decode(token, config.jwtSecret)
 
-  if (decode) {
-    ctx.body = { status: 0, msg: '已登录' }
+    if (decode) {
+      ctx.body = { status: 0, msg: '已登录' }
+    }
+  } else {
+    ctx.body = { status: 1, msg: '未登录' }
   }
-
-  ctx.body = { status: 1, msg: '未登录' }
 }
 
 // 添加收藏
