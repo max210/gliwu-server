@@ -8,6 +8,7 @@ import userModel from '../models/user'
 
 // 注册
 export const signup = async (ctx, next) => {
+  console.log(ctx.query.name)
   const name = validator.trim(ctx.query.name)
   const email = validator.trim(ctx.query.email)
   const pass = validator.trim(ctx.query.pass)
@@ -61,6 +62,7 @@ export const signup = async (ctx, next) => {
 
 // 登录
 export const signin = async (ctx, next) => {
+  console.log(typeof ctx.query.nameOrEmail)
   const nameOrEmail = validator.trim(ctx.query.nameOrEmail)
   const pass = validator.trim(ctx.query.pass)
 
@@ -101,12 +103,12 @@ export const signin = async (ctx, next) => {
   }
 
    ctx.cookies.set(config.cookieName, token, opts)
-   ctx.body = {status: 0, msg: '登录成功', token}   //返回token 以备客户端需要
+   ctx.body = {status: 0, msg: '登录成功', name: user.name, token}   //返回token 以备客户端需要
 }
 
 // 登出
 export const signout = async (ctx, next) => {
-   ctx.cookies.set(config.cookieName, '', {signed:false,maxAge:0})
+   ctx.cookies.set(config.cookieName, '', { signed: false, maxAge: 0 })
    ctx.body = {status: 0, msg: '已登出'}
 }
 
@@ -115,9 +117,9 @@ export const checklogin = async (ctx, next) => {
   const token = ctx.cookies.get(config.cookieName) || ''
   if (token) {
     const decoded = jwt.decode(token, config.jwtSecret)
-
-    if (decode) {
-      ctx.body = { status: 0, msg: '已登录' }
+    if (decoded) {
+      console.log('yidenglu')
+      ctx.body = { status: 0, msg: '已登录', name: decoded.name }
     }
   } else {
     ctx.body = { status: 1, msg: '未登录' }
@@ -126,6 +128,7 @@ export const checklogin = async (ctx, next) => {
 
 // 添加收藏
 export const addCollection = async (ctx, next) => {
+  console.log(ctx.query)
   const { productId, productImg, productLink } = ctx.query
   const _id = ctx.user.user_id
   const product = { productId, productImg, productLink }

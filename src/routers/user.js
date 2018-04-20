@@ -10,7 +10,7 @@ router.get('/signin', user.signin)
 router.get('/signout', user.signout)
 router.get('/checklogin', user.checklogin)
 
-router.get('/addCollection', authRequired, user.addCollection)
+router.post('/addCollection', authRequired, user.addCollection)
 router.get('/removeCollection', authRequired, user.removeCollection)
 router.get('/collection', authRequired, user.collection)
 
