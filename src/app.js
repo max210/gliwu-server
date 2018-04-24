@@ -27,12 +27,12 @@ app.use(logger())
 
 // 跨域
 app.use(cors({
-    origin: 'http://localhost:8080',
-    exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
     maxAge: 5,
     credentials: true, // 发送cookie
-    allowMethods: ['GET', 'POST', 'OPTIONS', 'DELETE'],
+    origin: 'http://localhost:8080',
+    allowMethods: ['GET', 'POST', 'DELETE'],
     allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    exposeHeaders: ['WWW-Authenticate', 'Server-Authorization']
 }))
 
 app.use(good.routes(), good.allowedMethods())

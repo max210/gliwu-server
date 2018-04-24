@@ -4,7 +4,7 @@ import jwt from 'jwt-simple'
 import isEmail from 'validator/lib/isEmail'
 
 import config from '../config'
-import userModel from '../models/user'
+import User from '../models/user'
 
 // 注册
 export const signup = async (ctx, next) => {
@@ -32,23 +32,25 @@ export const signup = async (ctx, next) => {
   }
 
   //验证用户名是否已注册
-  const hadName = await userModel.findOne({name})
+  const hadName = await User.findOne({name})
   if (hadName || name === 'admin') {
     ctx.body = { status: 1, msg: '用户名已被注册' }
     return
   }
 
   //验证邮箱是否已注册
-  const hadEmail = await userModel.findOne({email})
+  const hadEmail = await User.findOne({email})
   if (hadEmail) {
     ctx.body = { status: 1, msg: '邮箱已被注册' }
     return
   }
 
-  let user = new userModel()
-  user.name = name
-  user.email = email
-  user.pass = bcrypt.hashSync(pass, 10)
+  const user = new User({
+    name,
+    email,
+    pass: bcrypt.hashSync(pass, 10)
+  })
+
   try {
     await user.save()
     ctx.body = { status: 0, msg: '注册成功' }
@@ -72,7 +74,7 @@ export const signin = async (ctx, next) => {
   }
 
   // 查找用户
-  const user = await userModel.findOne({
+  const user = await User.findOne({
     $or: [{name: nameOrEmail}, {email: nameOrEmail}]
   })
   if (!user) {
@@ -117,7 +119,6 @@ export const checklogin = async (ctx, next) => {
   if (token) {
     const decoded = jwt.decode(token, config.jwtSecret)
     if (decoded) {
-      console.log('yidenglu')
       ctx.body = { status: 0, msg: '已登录', name: decoded.name }
     }
   } else {
@@ -129,13 +130,15 @@ export const checklogin = async (ctx, next) => {
 export const addCollection = async (ctx, next) => {
   console.log(ctx.request.body)
   const { productId, productImg, productLink } = ctx.request.body
-  const _id = ctx.user.user_id
+  const _id = ctx.user._id
   const product = { productId, productImg, productLink }
 
   try {
-    const user = await userModel.findOne({_id}).exec()
+    const user = await User.findOne({_id}).exec()
+    console.log(user)
     const filterResult = R.filter(R.propEq('productId', productId), user.likes)
 
+    console.log(filterResult)
     if (filterResult.length) {
        ctx.body = {status: 1, msg: '您已经收藏过了，快去「我的收藏」看看'}
        return
@@ -153,15 +156,18 @@ export const addCollection = async (ctx, next) => {
 
 // 取消收藏
 export const removeCollection = async (ctx, next) => {
-  const productId = ctx.query
-  const _id = ctx.user.user_id
-  console.log('ctx.decoded')
-  console.log(ctx.user)
+  const productId = ctx.query.productId
+  const _id = ctx.user._id
+  console.log(productId)
 
   try {
-    const user = await userModel.findOne({_id}).exec()
-    const newlikes = R.reject(R.propEq('productId', productId), user.likes)
+    const user = await User.findOne({_id}).exec()
+    console.log('user')
+    console.log(user)
+    let newlikes = R.reject(R.propEq('productId', productId), user.likes)
 
+    console.log('newlikes')
+    console.log(newlikes)
     user.likes = newlikes
     await user.save()
     ctx.body = {status: 0, msg: '取消收藏成功'}
@@ -173,10 +179,10 @@ export const removeCollection = async (ctx, next) => {
 
 // 收藏的商品
 export const collection = async (ctx, next) => {
-  const _id = ctx.user.user_id
+  const _id = ctx.user._id
 
   try {
-    const user = await userModel.findOne({ _id })
+    const user = await User.findOne({ _id })
     ctx.body = { status: 0, msg: '获取成功', data: user.likes }
   } catch (e) {
     ctx.body = { status: 1, msg: '获取失败' }

@@ -1,4 +1,4 @@
-import goodModel from '../models/good'
+import Good from '../models/good'
 
 export const getGoods = async (ctx, next) => {
   const page = parseInt(ctx.query.page),
@@ -13,7 +13,7 @@ export const getGoods = async (ctx, next) => {
   // 有排序和价格区间时
   if (sort && maxPrice) {
     try {
-      const result = await goodModel.find(params).sort({productPrice: sort}).skip(skip).limit(pageSize).exec()
+      const result = await Good.find(params).sort({productPrice: sort}).skip(skip).limit(pageSize).exec()
       ctx.body = {
         status: 0,
         msg: 'success',
@@ -30,7 +30,7 @@ export const getGoods = async (ctx, next) => {
   // 只有排序时
   if (!maxPrice && sort) {
     try {
-      const result = await goodModel.find({ productType }).sort({productPrice: sort}).skip(skip).limit(pageSize).exec()
+      const result = await Good.find({ productType }).sort({productPrice: sort}).skip(skip).limit(pageSize).exec()
       ctx.body = {
         status: 0,
         msg: 'success',
@@ -47,7 +47,7 @@ export const getGoods = async (ctx, next) => {
   // 只有价格区间时
   if (maxPrice && !sort) {
     try {
-      const result = await goodModel.find(params).skip(skip).limit(pageSize).exec()
+      const result = await Good.find(params).skip(skip).limit(pageSize).exec()
       ctx.body = {
         status: 0,
         msg: 'success',
@@ -63,7 +63,7 @@ export const getGoods = async (ctx, next) => {
 
   // 没有价格区间和排序时
   try {
-    const result = await goodModel.find({ productType }).skip(skip).limit(pageSize).exec()
+    const result = await Good.find({ productType }).skip(skip).limit(pageSize).exec()
     ctx.body = {
       status: 0,
       msg: 'success',
@@ -94,18 +94,19 @@ export const getAllGoods = async (ctx, next) => {
 
 // 增加商品
 export const newGood = async (ctx, next) => {
-  const productType = ctx.query.productType,
-        productName = ctx.query.productName,
-        productImg = ctx.query.productImg,
-        productPrice = ctx.query.productPrice,
-        productDesc = ctx.query.productDesc
+  const productType = (ctx.request.body.productType).trim(),
+        productName = (ctx.request.body.productName).trim(),
+        productImg = (ctx.request.body.productImg).trim(),
+        productPrice = (ctx.request.body.productPrice).trim(),
+        productDesc = (ctx.request.body.productDesc).trim()
 
-  let good = new goodModel()
-  good.productType = productType
-  good.productName = productName
-  good.productImg = productImg
-  good.productPrice = productPrice
-  good.productDesc = productDesc
+  const good = new Good({
+    productType,
+    productName,
+    productImg,
+    productPrice,
+    productDesc
+  })
 
   try {
     await good.save()
@@ -120,7 +121,7 @@ export const delateGood = async (ctx, next) => {
   const _id = ctx.query.productId
 
   try {
-    await goodModel.remove({ _id })
+    await Good.remove({ _id })
     ctx.body = { status: 0, msg: '删除成功' }
   } catch (e) {
     ctx.body = { status: 1, msg: '删除失败' }

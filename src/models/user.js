@@ -4,7 +4,8 @@ const userSechema = new mongoose.Schema({
   created: String,
   name: String,
   email: String,
-  pass: String
+  pass: String,
+  likes: Array
 })
 
 userSechema.pre('save', function(next) {
