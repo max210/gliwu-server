@@ -8,12 +8,11 @@ export default () => {
   let maxConnections = 0
 
   return new Promise(resolve => {
+
     mongoose.connect(config.db)
 
     mongoose.connection.on('disconnected', () => {
-      maxConnections ++
-      console.log(maxConnections)
-
+      maxConnections += 1
       if (maxConnections < 5) {
         mongoose.connect(config.db)
       } else {
@@ -22,8 +21,7 @@ export default () => {
     })
 
     mongoose.connection.on('error', err => {
-      maxConnections ++
-
+      maxConnections += 1
       if (maxConnections < 5) {
         mongoose.connect(config.db)
       } else {

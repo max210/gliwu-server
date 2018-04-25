@@ -1,10 +1,12 @@
 import Koa from 'koa'
 import json from 'koa-json'
+import cors from 'koa2-cors'
 import logger from 'koa-logger'
 import onerror from 'koa-onerror'
 import bodyparser from 'koa-bodyparser'
-import cors from 'koa2-cors'
 
+import goodModel from './models/good'
+import userModel from './models/user'
 import mongooseInit from './models/init'
 import good from './routers/good'
 import user from './routers/user'

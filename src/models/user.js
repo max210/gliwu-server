@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import bcrypt from 'bcrypt'
 
 const userSechema = new mongoose.Schema({
   created: String,
@@ -13,6 +14,34 @@ userSechema.pre('save', function(next) {
   next()
 })
 
-const User = mongoose.model('User', userSechema)
+userSechema.pre('save', function(next) {
+  if (!this.isModified('pass')) return next()
 
-export default User
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) return next(err)
+
+    bcrypt.hash(this.pass, salt, (err, hash) => {
+      if (err) return next(err)
+
+      this.pass = hash
+      next()
+    })
+  })
+})
+
+// 实例的方法
+userSechema.methods = {
+  comparePassword: (_pass, pass) => {
+    return new Promise((resolve, reject) => {
+      bcrypt.compare(_pass, pass, (err, isMatch) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(isMatch)
+        }
+      })
+    })
+  }
+}
+
+mongoose.model('User', userSechema)

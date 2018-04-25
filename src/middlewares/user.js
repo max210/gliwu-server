@@ -1,10 +1,12 @@
 import R from 'ramda'
 import bcrypt from 'bcrypt'
+import mongoose from 'mongoose'
 import jwt from 'jwt-simple'
 import isEmail from 'validator/lib/isEmail'
 
 import config from '../config'
-import User from '../models/user'
+
+const User = mongoose.model('User')
 
 // 注册
 export const signup = async (ctx, next) => {
@@ -45,11 +47,7 @@ export const signup = async (ctx, next) => {
     return
   }
 
-  const user = new User({
-    name,
-    email,
-    pass: bcrypt.hashSync(pass, 10)
-  })
+  const user = new User({ name, email, pass })
 
   try {
     await user.save()

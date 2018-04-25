@@ -10,8 +10,8 @@ router.get('/signin', user.signin)
 router.get('/signout', user.signout)
 router.get('/checklogin', user.checklogin)
 
-router.post('/addCollection', authRequired, user.addCollection)
-router.get('/removeCollection', authRequired, user.removeCollection)
+router.post('/add-collection', authRequired, user.addCollection)
+router.get('/remove-collection', authRequired, user.removeCollection)
 router.get('/collection', authRequired, user.collection)
 
 export default router

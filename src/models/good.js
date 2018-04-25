@@ -15,6 +15,4 @@ goodSechema.pre('save', function(next) {
   next()
 })
 
-const Good = mongoose.model('Good', goodSechema)
-
-export default Good
+mongoose.model('Good', goodSechema)

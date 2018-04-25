@@ -1,4 +1,6 @@
-import Good from '../models/good'
+import mongoose from 'mongoose'
+
+const Good = mongoose.model('Good')
 
 export const getGoods = async (ctx, next) => {
   const page = parseInt(ctx.query.page),
