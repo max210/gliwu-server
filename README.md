@@ -5,7 +5,7 @@
 ## install
 
 ```
-cd koa-server
+cd gliwu-server
 npm i
 ```
 ## dev

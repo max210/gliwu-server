@@ -61,7 +61,6 @@ export const signup = async (ctx, next) => {
 
 // 登录
 export const signin = async (ctx, next) => {
-  console.log(typeof ctx.query.nameOrEmail)
   const nameOrEmail = (ctx.query.nameOrEmail).trim()
   const pass = (ctx.query.pass).trim()
 
@@ -81,7 +80,7 @@ export const signin = async (ctx, next) => {
   }
 
   // 验证密码
-  const isOk = bcrypt.compareSync(pass, user.pass)
+  const isOk = await user.comparePassword(pass, user.pass)
   if (!isOk) {
     ctx.body = { status: 1, msg: '密码错误' }
     return
