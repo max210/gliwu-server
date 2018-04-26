@@ -16,12 +16,7 @@ export const getGoods = async (ctx, next) => {
   if (sort && maxPrice) {
     try {
       const result = await Good.find(params).sort({productPrice: sort}).skip(skip).limit(pageSize).exec()
-      ctx.body = {
-        status: 0,
-        msg: 'success',
-        length: result.length,
-        data: result
-      }
+      ctx.body = { status: 0, msg: 'success', data: result }
       return
     } catch (e) {
       ctx.body = { status: 1, msg: '获取失败' }
@@ -33,12 +28,7 @@ export const getGoods = async (ctx, next) => {
   if (!maxPrice && sort) {
     try {
       const result = await Good.find({ productType }).sort({productPrice: sort}).skip(skip).limit(pageSize).exec()
-      ctx.body = {
-        status: 0,
-        msg: 'success',
-        length: result.length,
-        data: result
-      }
+      ctx.body = { status: 0, msg: 'success', data: result }
       return
     } catch (e) {
       ctx.body = { status: 1, msg: '获取失败' }
@@ -50,12 +40,19 @@ export const getGoods = async (ctx, next) => {
   if (maxPrice && !sort) {
     try {
       const result = await Good.find(params).skip(skip).limit(pageSize).exec()
-      ctx.body = {
-        status: 0,
-        msg: 'success',
-        length: result.length,
-        data: result
-      }
+      ctx.body = { status: 0, msg: 'success', data: result }
+      return
+    } catch (e) {
+      ctx.body = { status: 1, msg: '获取失败' }
+      return
+    }
+  }
+
+  // 没有价格区间、商品种类和排序时(admin查看所有商品)
+  if (!productType) {
+    try {
+      const result = await Good.find({}).skip(skip).limit(pageSize).exec()
+      ctx.body = { status: 0, msg: 'success', data: result }
       return
     } catch (e) {
       ctx.body = { status: 1, msg: '获取失败' }
@@ -102,15 +99,14 @@ export const newGood = async (ctx, next) => {
         productPrice = (ctx.request.body.productPrice).trim(),
         productDesc = (ctx.request.body.productDesc).trim()
 
-  const good = new Good({
-    productType,
-    productName,
-    productImg,
-    productPrice,
-    productDesc
-  })
-
   try {
+    const good = new Good({
+      productType,
+      productName,
+      productImg,
+      productPrice,
+      productDesc
+    })
     await good.save()
     ctx.body = { status: 0, msg: '创建商品成功' }
   } catch (e) {
@@ -120,10 +116,11 @@ export const newGood = async (ctx, next) => {
 
 // 删除商品
 export const delateGood = async (ctx, next) => {
-  const _id = ctx.query.productId
+  const _id = ctx.request.body.productId
 
   try {
-    await Good.remove({ _id })
+    console.log(_id)
+    await Good.remove({ '_id': _id }).exec()
     ctx.body = { status: 0, msg: '删除成功' }
   } catch (e) {
     ctx.body = { status: 1, msg: '删除失败' }

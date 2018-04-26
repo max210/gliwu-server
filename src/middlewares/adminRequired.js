@@ -7,10 +7,8 @@ export default (ctx, next) => {
   if (token) {
     const decoded = jwt.decode(token, config.jwtSecret)
 
-    if (decoded.name === 'admin') {
-      ctx.user = decoded
-      return next()
-    }
+    if (decoded.name === 'admin') return next()
+
     ctx.body = { status: 1, msg: '未登录' }
   }
 

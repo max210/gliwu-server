@@ -24,10 +24,10 @@ export const signup = async (ctx, next) => {
     ctx.body = { status: 1, msg: '用户名至少需要3个字符' }
     return
   }
-  // if (!isEmail(email)) {
-  //   ctx.body = {status: 1, msg: '邮箱不合法'}
-  //   return
-  // }
+  if (!isEmail(email)) {
+    ctx.body = {status: 1, msg: '邮箱不合法'}
+    return
+  }
   if (pass !== rePass) {
     ctx.body = { status: 1, msg: '两次密码输入不一致' }
     return
