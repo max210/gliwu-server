@@ -10,7 +10,7 @@ const userSechema = new mongoose.Schema({
 })
 
 userSechema.pre('save', function(next) {
-  if (!this.created) this.created = new Date
+  if (!this.created) this.created = Date.now()
   next()
 })
 

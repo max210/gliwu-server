@@ -99,14 +99,14 @@ export const newGood = async (ctx, next) => {
         productPrice = (ctx.request.body.productPrice).trim(),
         productDesc = (ctx.request.body.productDesc).trim()
 
+  const good = new Good({
+    productType,
+    productName,
+    productImg,
+    productPrice,
+    productDesc
+  })
   try {
-    const good = new Good({
-      productType,
-      productName,
-      productImg,
-      productPrice,
-      productDesc
-    })
     await good.save()
     ctx.body = { status: 0, msg: '创建商品成功' }
   } catch (e) {
@@ -120,7 +120,7 @@ export const delateGood = async (ctx, next) => {
 
   try {
     console.log(_id)
-    await Good.remove({ '_id': _id }).exec()
+    await Good.remove({ _id }).exec()
     ctx.body = { status: 0, msg: '删除成功' }
   } catch (e) {
     ctx.body = { status: 1, msg: '删除失败' }

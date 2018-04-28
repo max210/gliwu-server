@@ -1,6 +1,6 @@
 import Router from 'koa-router'
 
-import * as good from '../middlewares/good'
+import * as good from '../controllers/good'
 import adminRequired from '../middlewares/adminRequired'
 
 const router = new Router()

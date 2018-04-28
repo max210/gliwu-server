@@ -11,7 +11,7 @@ const goodSechema = new mongoose.Schema({
 })
 
 goodSechema.pre('save', function(next) {
-  if (!this.created) this.created = new Date
+  if (!this.created) this.created = Date.now()
   next()
 })
 
