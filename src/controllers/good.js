@@ -129,15 +129,16 @@ export const delateGood = async (ctx, next) => {
 
 // 修改商品
 export const updateGood = async (ctx, next) => {
-  const _id = ctx.query.productId,
-        productType = ctx.query.productType,
-        productName = ctx.query.productName,
-        productImg = ctx.query.productImg,
-        productPrice = ctx.query.productPrice,
-        productDesc = ctx.query.productDesc
+  console.log(ctx.request.body)
+  const _id = ctx.request.body.productId,
+        productType = ctx.request.body.productType,
+        productName = ctx.request.body.productName,
+        productImg = ctx.request.body.productImg,
+        productPrice = ctx.request.body.productPrice,
+        productDesc = ctx.request.body.productDesc
 
   try {
-    await userModel.updateOne({ _id }, { productType, productName, productImg, productPrice, productDesc }).exec()
+    await Good.findByIdAndUpdate(_id, { productType, productName, productImg, productPrice, productDesc }).exec()
     ctx.body = { status: 0, msg: '更新商品成功' }
   } catch (e) {
     ctx.body = { status: 1, msg: '更新商品失败' }

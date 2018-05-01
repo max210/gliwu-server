@@ -1,6 +1,6 @@
 import Router from 'koa-router'
 
-import * as user from '../controller/user'
+import * as user from '../controllers/user'
 import authRequired from '../middlewares/authRequired'
 
 const router = new Router({prefix: '/api/user'})
