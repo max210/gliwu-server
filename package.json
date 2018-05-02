@@ -21,6 +21,8 @@
     "koa-router": "^7.4.0",
     "koa2-cors": "^2.0.5",
     "mongoose": "^5.0.13",
+    "nodemailer": "^4.6.4",
+    "nodemailer-smtp-transport": "^2.7.4",
     "ramda": "^0.25.0",
     "validator": "^9.4.1"
   },

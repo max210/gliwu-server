@@ -14,6 +14,7 @@ userSechema.pre('save', function(next) {
   next()
 })
 
+// 密码加盐加密
 userSechema.pre('save', function(next) {
   if (!this.isModified('pass')) return next()
 

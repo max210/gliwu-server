@@ -6,6 +6,7 @@ import authRequired from '../middlewares/authRequired'
 const router = new Router({prefix: '/api/user'})
 
 router.post('/signup', user.signup)
+router.post('/active', user.signupActive)
 router.get('/signin', user.signin)
 router.get('/signout', user.signout)
 router.get('/checklogin', user.checklogin)

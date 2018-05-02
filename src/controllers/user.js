@@ -5,6 +5,7 @@ import jwt from 'jwt-simple'
 import isEmail from 'validator/lib/isEmail'
 
 import config from '../config'
+import sendEmail from './sendEmail'
 
 const User = mongoose.model('User')
 
@@ -47,16 +48,28 @@ export const signup = async (ctx, next) => {
     return
   }
 
-  const user = new User({ name, email, pass })
+  const token = jwt.encode(pass, config.jwtSecret)
+  try {
+    await sendEmail(name, email, token)
+    ctx.body = { status: 0, msg: '请查看您的邮箱，点击激活链接以激活您的账号'}
+  } catch (e) {
+    ctx.body = { status: 1, msg: '邮件发送失败'}
+  }
 
+}
+
+//激活用户账户
+export const signupActive = async (ctx, next) => {
+  const { name, email, token } = ctx.request.body
+  const pass = jwt.decode(token, config.jwtSecret)
+
+  const user = new User({ name, email, pass })
   try {
     await user.save()
     ctx.body = { status: 0, msg: '注册成功' }
   } catch (e) {
-    ctx.body = { status: 1,msg: '注册失败，请稍后再试～' }
+    ctx.body = { status: 1, msg: '注册失败，请稍后再试～' }
   }
-
-  next()
 }
 
 // 登录
