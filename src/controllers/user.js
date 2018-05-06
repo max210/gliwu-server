@@ -1,7 +1,8 @@
 import R from 'ramda'
+import axios from 'axios'
 import bcrypt from 'bcrypt'
-import mongoose from 'mongoose'
 import jwt from 'jwt-simple'
+import mongoose from 'mongoose'
 import isEmail from 'validator/lib/isEmail'
 
 import config from '../config'
@@ -115,6 +116,50 @@ export const signin = async (ctx, next) => {
 
    ctx.cookies.set(config.cookieName, token, opts)
    ctx.body = { status: 0, msg: '登录成功', name: user.name, token }   //返回token 以备客户端需要
+}
+
+//第三方登录（GitHub）
+export const thirdLogin = async (ctx, next) => {
+  const code = ctx.request.body.code
+  try {
+    const params = {
+      client_id: '3e06889acba3ac350514',
+      client_secret: 'edfd77e8ffe89cb7afd7a4dbe748fa024bdb7a44',
+      code
+    }
+    const res = await axios.post(`https://github.com/login/oauth/access_token`, params) // 获取access_token
+    const access_token = R.pipe(R.split('&'), R.head, R.split('='), R.last)(res.data)
+    const resData = await axios.get(`https://api.github.com/user`, {params: { access_token }}) // 获取GitHub用户信息
+
+    // 存入数据库
+    const name = resData.data.login
+    const email = resData.data.email
+
+    const user = new User({ name, email })
+    await user.save()
+
+    // 获取_id，返回cookie
+    const findUser = await User.findOne({ name }).exec()
+
+    const payload = {
+      _id: findUser._id,
+      name: findUser.name
+    }
+    // 生成token
+    const token = jwt.encode(payload, config.jwtSecret)
+
+    const opts = {
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      signed: true,
+      httpOnly: true
+    }
+
+     ctx.cookies.set(config.cookieName, token, opts)
+     ctx.body = { status: 0, msg: '登录成功', name: findUser.name, token }   //返回token 以备客户端需要
+  } catch (e) {
+    ctx.body = { status: 1, msg: '登录失败'}
+  }
 }
 
 // 登出
