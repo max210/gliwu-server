@@ -1,6 +1,8 @@
 import nodemailer from 'nodemailer'
 import smtpTransport from 'nodemailer-smtp-transport'
 
+import config from '../config'
+
 const sendEmail = (name, email, token) => {
   return new Promise((resolve, reject) => {
     const transport = nodemailer.createTransport(smtpTransport({
@@ -20,7 +22,7 @@ const sendEmail = (name, email, token) => {
       html:
         `<p>您好：${name}</p>` +
         `<p>我们收到您在G礼物网站的注册信息，请点击下面的链接来激活帐户：</p>` +
-        `<a href  = "http://localhost:8080/active?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&token=${token}">激活链接</a>` +
+        `<a href  = \"${config.emailHost}/active?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&token=${token}\">激活链接</a>` +
         `<p>若您没有在G礼物网站填写过注册信息，说明有人滥用了您的电子邮箱，请删除此邮件，我们对给您造成的打扰感到抱歉。</p>` +
         `<p>G礼物 谨上。</p>`
     }
