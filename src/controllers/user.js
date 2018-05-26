@@ -131,12 +131,17 @@ export const thirdLogin = async (ctx, next) => {
     const access_token = R.pipe(R.split('&'), R.head, R.split('='), R.last)(res.data)
     const resData = await axios.get(`https://api.github.com/user`, {params: { access_token }}) // 获取GitHub用户信息
 
-    // 存入数据库
     const name = resData.data.login
     const email = resData.data.email
+    const githubId = resData.data.id
 
-    const user = new User({ name, email })
-    await user.save()
+    const github = await User.findOne({ githubId }).exec()
+
+    // 第一次github登录
+    if (!github) {
+      const user = new User({ name, email, githubId })
+      await user.save()
+    }
 
     // 获取_id，返回cookie
     const findUser = await User.findOne({ name }).exec()
@@ -183,17 +188,14 @@ export const checklogin = async (ctx, next) => {
 
 // 添加收藏
 export const addCollection = async (ctx, next) => {
-  console.log(ctx.request.body)
   const { productId, productImg, productLink } = ctx.request.body
   const _id = ctx.user._id
   const product = { productId, productImg, productLink }
 
   try {
     const user = await User.findOne({_id}).exec()
-    console.log(user)
     const filterResult = R.filter(R.propEq('productId', productId), user.likes)
 
-    console.log(filterResult)
     if (filterResult.length) {
        ctx.body = {status: 1, msg: '您已经收藏过了，快去「我的收藏」看看'}
        return
@@ -213,16 +215,11 @@ export const addCollection = async (ctx, next) => {
 export const removeCollection = async (ctx, next) => {
   const productId = ctx.query.productId
   const _id = ctx.user._id
-  console.log(productId)
 
   try {
     const user = await User.findOne({_id}).exec()
-    console.log('user')
-    console.log(user)
     let newlikes = R.reject(R.propEq('productId', productId), user.likes)
 
-    console.log('newlikes')
-    console.log(newlikes)
     user.likes = newlikes
     await user.save()
     ctx.body = {status: 0, msg: '取消收藏成功'}

@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 
 const userSechema = new mongoose.Schema({
   created: String,
+  githubId: String,
   name: String,
   email: String,
   pass: String,
@@ -10,7 +11,7 @@ const userSechema = new mongoose.Schema({
 })
 
 userSechema.pre('save', function(next) {
-  if (!this.created) this.created = Date.now()
+  if (!this.created) this.created = new Date()
   next()
 })
 

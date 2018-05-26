@@ -10,6 +10,7 @@ import userModel from './models/user'
 import mongooseInit from './models/init'
 import good from './routers/good'
 import user from './routers/user'
+import config  from './config'
 
 const app = new Koa()
 
@@ -31,7 +32,7 @@ app.use(logger())
 app.use(cors({
     maxAge: 5,
     credentials: true, // 发送cookie
-    origin: 'http://localhost:8080',
+    origin: config.originHost,
     allowMethods: ['GET', 'POST', 'DELETE'],
     allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization']
