@@ -11,7 +11,7 @@ npm i
 ## dev
 
 ```
-npm run dev
+NODE_ENV='development' npm run dev
 ```
 
 ## build and start

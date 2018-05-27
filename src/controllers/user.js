@@ -123,8 +123,8 @@ export const thirdLogin = async (ctx, next) => {
   const code = ctx.request.body.code
   try {
     const params = {
-      client_id: '3e06889acba3ac350514',
-      client_secret: 'edfd77e8ffe89cb7afd7a4dbe748fa024bdb7a44',
+      client_id: config.client_id,
+      client_secret: config.client_secret,
       code
     }
     const res = await axios.post(`https://github.com/login/oauth/access_token`, params) // 获取access_token
