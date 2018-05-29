@@ -13,13 +13,14 @@ import mongooseInit from './models/init'
 import good from './routers/good'
 import user from './routers/user'
 import config  from './config'
+import socketListen from './controllers/socket'
 
 const app = new Koa()
 
 // socket.io
 const server = http.createServer(app.callback())
 const io = socket(server)
-
+socketListen(io)
 
 //mongoose初始化
 ;(async () => {
@@ -52,4 +53,4 @@ app.on('error', (err, ctx) => {
   console.error('gliwu-server has error', err, ctx)
 })
 
-app.listen(3000)
+server.listen(3000)
