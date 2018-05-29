@@ -1,6 +1,8 @@
 import Koa from 'koa'
+import http from 'http'
 import json from 'koa-json'
 import cors from 'koa2-cors'
+import socket from 'socket.io'
 import logger from 'koa-logger'
 import onerror from 'koa-onerror'
 import bodyparser from 'koa-bodyparser'
@@ -13,6 +15,11 @@ import user from './routers/user'
 import config  from './config'
 
 const app = new Koa()
+
+// socket.io
+const server = http.createServer(app.callback())
+const io = socket(server)
+
 
 //mongoose初始化
 ;(async () => {
